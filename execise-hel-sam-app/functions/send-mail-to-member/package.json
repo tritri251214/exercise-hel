@@ -1,0 +1,19 @@
+{
+  "name": "send-mail-to-member",
+  "version": "1.0.0",
+  "description": "Send mail to member",
+  "main": "app.js",
+  "repository": "TODO",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "nodemailer": "^6.6.2"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
+  }
+}

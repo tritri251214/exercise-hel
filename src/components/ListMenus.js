@@ -38,7 +38,7 @@ const ListMenus = () => {
       setLoading(false);
       return response.data.listMenus.items;
     } catch (error) {
-      console.log('error: ', error);
+      console.log('getListMenus error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
       }

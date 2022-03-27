@@ -1,0 +1,41 @@
+{
+    "Comment": "Send mail to member when Admin change Order Placed to Picking",
+    "StartAt": "PrepareFoods",
+    "States": {
+        "PrepareFoods": {
+            "Type": "Wait",
+            "TimestampPath": "$.time",
+            "Next": "Delivery"
+        },
+        "Delivery": {
+            "Type": "Task",
+            "Resource": "${DeliveryFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.TaskFailed"
+                    ],
+                    "IntervalSeconds": 20,
+                    "MaxAttempts": 2,
+                    "BackoffRate": 1
+                }
+            ],
+            "Next": "Send mail to member"
+        },
+        "Send mail to member": {
+            "Type": "Task",
+            "Resource": "${SendMailToMemberFunctionArn}",
+            "Retry": [
+                {
+                    "ErrorEquals": [
+                        "States.TaskFailed"
+                    ],
+                    "IntervalSeconds": 20,
+                    "MaxAttempts": 2,
+                    "BackoffRate": 1
+                }
+            ],
+            "End": true
+        }
+    }
+}
