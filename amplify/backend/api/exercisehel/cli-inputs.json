@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "exercisehel",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "/Users/minhtri/Documents/TMA/Hudson/exercise-hel/amplify/backend/api/exercisehel/schema.graphql",
+    "defaultAuthType": {
+      "mode": "API_KEY",
+      "expirationTime": 7
+    },
+    "additionalAuthTypes": [
+      {
+        "mode": "AMAZON_COGNITO_USER_POOLS",
+        "cognitoUserPoolId": "authexercisehel2165e49f"
+      },
+      {
+        "mode": "AWS_IAM"
+      }
+    ]
+  }
+}

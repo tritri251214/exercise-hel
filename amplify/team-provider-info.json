@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-exercisehel-dev-161136-authRole",
+      "UnauthRoleArn": "arn:aws:iam::730997293810:role/amplify-exercisehel-dev-161136-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::730997293810:role/amplify-exercisehel-dev-161136-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
+      "UnauthRoleName": "amplify-exercisehel-dev-161136-unauthRole",
+      "StackName": "amplify-exercisehel-dev-161136",
+      "StackId": "arn:aws:cloudformation:us-east-2:730997293810:stack/amplify-exercisehel-dev-161136/42e4dfe0-aa89-11ec-a3f3-0a57575c8e4c",
+      "AmplifyAppId": "d3r4llzivxiqye"
+    },
+    "categories": {
+      "auth": {
+        "exercisehel2165e49f": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+enum StatusMenu {
+  Active
+  Inactive
+  Deleted
+}
+
+enum StatusOrder {
+  OrderPlaced
+  Picking
+  Delivery
+  Delivered
+}
+
+type Food {
+  name: String
+  quantity: Int
+  remaining: Int
+}
+
+type UserAddress
+@model
+@auth(
+  rules: [
+    { allow: public }
+    # { allow: public, provider: iam, operations: [read] }
+    # { allow: private, operations: [read] }
+    # { allow: owner, operations: [create, delete, update, read] }
+  ]
+)
+{
+  id: ID!
+  userID: ID!
+  email: String! @index(name: "byEmail", sortKeyFields: ["userID"], queryField: "getUserByEmail")
+  address1: String
+  address2: String
+  address3: String
+}
+
+type Menu
+@model
+@auth(
+  rules: [
+    { allow: public }
+    # { allow: public, provider: iam, operations: [read] }
+    # { allow: private, operations: [read] }
+    # { allow: owner, operations: [create, delete, update, read] }
+  ]
+)
+{
+  id: ID!
+  week: AWSDateTime!
+  entree: Food
+  mainMeal: Food
+  dessert: Food
+  status: StatusMenu!
+}
+
+type Order
+@model
+@auth(
+  rules: [
+    { allow: public }
+    # { allow: public, provider: iam, operations: [read] }
+    # { allow: private, operations: [read] }
+    # { allow: owner, operations: [create, delete, update, read] }
+  ]
+)
+{
+  id: ID!
+  userID: ID!
+  menuID: ID
+  orderTime: AWSDateTime!
+  entree: Food
+  mainMeal: Food
+  dessert: Food
+  status: StatusOrder
+  deliveryAddress: String
+  menu: Menu @hasOne
+}
