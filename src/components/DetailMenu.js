@@ -129,7 +129,7 @@ const DetailMenu = () => {
     try {
       const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { status: STATUS_MENU.Active }));
       const menus = response?.data?.getMenuByStatusMenu?.items;
-      const index = menus.findIndex((item) => {
+      const index = menus.findIndex(item => {
         const formatWeek = moment(item.week).format('w');
         if ((formatWeek === selectedWeek) && (item.status === STATUS_MENU.Active) && (item.id !== menuID)) {
           return item;
@@ -242,7 +242,7 @@ const DetailMenu = () => {
         <Form.Group className="mb-3" controlId="selStatus">
           <Form.Label>Status</Form.Label>
           <Form.Select aria-label="Select status" value={selectedStatusMenu} onChange={onChangeSelectStatusMenu} disabled={!menuID}>
-            {selectedStatusMenu.map(status => (
+            {selectStatus.map(status => (
               <option key={status} value={status}>{status}</option>
             ))}
           </Form.Select>

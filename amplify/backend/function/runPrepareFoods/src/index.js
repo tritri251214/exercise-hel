@@ -28,7 +28,7 @@ exports.handler = async (event) => {
     }
 
     await docClient.update(paramsUpdate).promise();
-    let prepareTime = moment().add(15, "minutes");
+    let prepareTime = moment().add(5, "minutes");
 
     const params = {
         stateMachineArn: 'arn:aws:states:us-east-2:730997293810:stateMachine:PrepareFoodsStepFunction-PfUQgE5fuWYE',

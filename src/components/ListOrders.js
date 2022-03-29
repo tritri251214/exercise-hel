@@ -91,7 +91,7 @@ const ListOrders = () => {
 
   const renderMain = () => {
     return (
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Order time</th>
@@ -119,7 +119,7 @@ const ListOrders = () => {
                 {order.statusOrder === STATUS_ORDER.Delivered && <Badge bg="secondary">{order.statusOrder}</Badge>}
               </td>
               <td>
-                {order.statusOrder !== STATUS_ORDER.Picking && <Button variant='primary' onClick={() => onPicking(order)}>Picking</Button>}
+                {order.statusOrder === STATUS_ORDER.OrderPlaced && <Button variant='primary' onClick={() => onPicking(order)}>Picking</Button>}
               </td>
             </tr>
           ))}

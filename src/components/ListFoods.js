@@ -76,12 +76,14 @@ const ListFoods = () => {
     item.type = typeOfFood;
     item.menuID = menu.id;
 
+    const remaining = item.quantity - item.ordered;
+
     return (
       <Card style={{ width: '18rem' }}>
         <Card.Body>
-          <Card.Title>{item.name} <Badge bg="primary" style={IndexStyles.badge}>{item.quantity - item.ordered}</Badge></Card.Title>
+          <Card.Title>{item.name} <Badge bg="primary" style={IndexStyles.badge}>{remaining}</Badge></Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{item.type}</Card.Subtitle>
-          <Button variant="primary" onClick={() => onAddItemToCart(item)}>Add to cart</Button>
+          <Button variant="primary" onClick={() => onAddItemToCart(item)} disabled={remaining === 0}>Add to cart</Button>
         </Card.Body>
       </Card>
     );

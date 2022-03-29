@@ -76,7 +76,7 @@ const Cart = () => {
   const onBuyNow = async () => {
     try {
       let entree = null; let mainMeal = null; let dessert = null;
-      foods.map(food => {
+      foods.forEach(food => {
         switch (food.type) {
           case TYPE_OF_FOOD.entree:
             entree = {

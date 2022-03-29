@@ -67,7 +67,7 @@ type Order
 )
 {
   id: ID!
-  userID: ID!
+  userID: ID! @index(name: "byUserID", sortKeyFields: ["id"], queryField: "getMenuByUserID")
   menuID: ID
   orderTime: AWSDateTime!
   entree: Food

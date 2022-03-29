@@ -36,6 +36,68 @@ export const listUserAddresses = /* GraphQL */ `
     }
   }
 `;
+export const getUserAddressByUserID = /* GraphQL */ `
+  query GetUserAddressByUserID(
+    $userID: ID!
+    $email: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserAddressFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getUserAddressByUserID(
+      userID: $userID
+      email: $email
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserByEmail = /* GraphQL */ `
+  query GetUserByEmail(
+    $email: String!
+    $userID: ModelIDKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserAddressFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getUserByEmail(
+      email: $email
+      userID: $userID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getMenu = /* GraphQL */ `
   query GetMenu($id: ID!) {
     getMenu(id: $id) {
@@ -69,6 +131,49 @@ export const listMenus = /* GraphQL */ `
     $nextToken: String
   ) {
     listMenus(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        week
+        entree {
+          name
+          quantity
+          ordered
+        }
+        mainMeal {
+          name
+          quantity
+          ordered
+        }
+        dessert {
+          name
+          quantity
+          ordered
+        }
+        statusMenu
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getMenuByStatusMenu = /* GraphQL */ `
+  query GetMenuByStatusMenu(
+    $statusMenu: StatusMenu!
+    $week: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMenuFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getMenuByStatusMenu(
+      statusMenu: $statusMenu
+      week: $week
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
       items {
         id
         week
@@ -191,18 +296,18 @@ export const listOrders = /* GraphQL */ `
     }
   }
 `;
-export const getUserAddressByUserID = /* GraphQL */ `
-  query GetUserAddressByUserID(
+export const getMenuByUserID = /* GraphQL */ `
+  query GetMenuByUserID(
     $userID: ID!
-    $email: ModelStringKeyConditionInput
+    $id: ModelIDKeyConditionInput
     $sortDirection: ModelSortDirection
-    $filter: ModelUserAddressFilterInput
+    $filter: ModelOrderFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    getUserAddressByUserID(
+    getMenuByUserID(
       userID: $userID
-      email: $email
+      id: $id
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -211,68 +316,8 @@ export const getUserAddressByUserID = /* GraphQL */ `
       items {
         id
         userID
-        email
-        address1
-        address2
-        address3
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getUserByEmail = /* GraphQL */ `
-  query GetUserByEmail(
-    $email: String!
-    $userID: ModelIDKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelUserAddressFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    getUserByEmail(
-      email: $email
-      userID: $userID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        userID
-        email
-        address1
-        address2
-        address3
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getMenuByStatusMenu = /* GraphQL */ `
-  query GetMenuByStatusMenu(
-    $statusMenu: StatusMenu!
-    $week: ModelStringKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelMenuFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    getMenuByStatusMenu(
-      statusMenu: $statusMenu
-      week: $week
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        week
+        menuID
+        orderTime
         entree {
           name
           quantity
@@ -288,9 +333,18 @@ export const getMenuByStatusMenu = /* GraphQL */ `
           quantity
           ordered
         }
-        statusMenu
+        statusOrder
+        deliveryAddress
+        menu {
+          id
+          week
+          statusMenu
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
+        orderMenuId
       }
       nextToken
     }

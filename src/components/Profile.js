@@ -2,7 +2,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import React, { useContext, useEffect, useState } from 'react';
 import { Col, Container, Form, Row, Table, Button, Badge } from 'react-bootstrap';
 import NotificationsContext from '../contexts/Notifications';
-import { listOrders } from '../graphql/queries';
+import { getMenuByUserID } from '../graphql/queries';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
@@ -27,7 +27,7 @@ const Profile = () => {
     try {
       const userInformation = getUserInformation();
       setProfile(userInformation);
-      const data = await getOrdersHistory();
+      const data = await getOrdersHistory(userInformation.id);
       setOrdersHistory(data);
     } catch (error) {
       console.log('error: ', error);
@@ -37,12 +37,12 @@ const Profile = () => {
     }
   }
 
-  async function getOrdersHistory() {
+  async function getOrdersHistory(userID) {
     try {
       setLoading(true);
-      const response = await API.graphql(graphqlOperation(listOrders));
+      const response = await API.graphql(graphqlOperation(getMenuByUserID, { userID }));
       setLoading(false);
-      return response.data.listOrders.items;
+      return response.data.getMenuByUserID.items;
     } catch (error) {
       console.log('getOrdersHistory error: ', error);
       if (error && error.errors) {
@@ -83,16 +83,17 @@ const Profile = () => {
       const formData = {
         id: order.id,
         userID: order.userID,
-        orderTime: moment().toISOString(),
+        orderTime: order.orderTime,
         entree: order.entree,
         mainMeal: order.mainMeal,
         dessert: order.dessert,
-        statusOrder: order.statusOrder,
+        statusOrder: STATUS_ORDER.Delivered,
         deliveryAddress: order.deliveryAddress
       };
       const response = await API.graphql(graphqlOperation(updateOrder, { input: formData }));
       if (response?.data?.updateOrder) {
         notifications({ message: 'Updated order successfully', type: 'success' });
+        await reload();
       }
       setLoading(false);
     } catch (error) {
@@ -148,7 +149,7 @@ const Profile = () => {
     return (
       <>
       <h4>Orders History</h4>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Menu week</th>

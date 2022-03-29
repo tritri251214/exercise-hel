@@ -108,7 +108,7 @@ const ListMenus = () => {
     return (
       <>
       <Button variant='primary' className="mb-3" onClick={redirectToAddMenu}>Create a Menu Catalogue</Button>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Week</th>

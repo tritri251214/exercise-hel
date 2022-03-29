@@ -23,6 +23,10 @@
         "sendMailErrorToAdmin": {
           "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
           "s3Key": "amplify-builds/sendMailErrorToAdmin-6b314946373037746c32-build.zip"
+        },
+        "listenChangeOrderTable": {
+          "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
+          "s3Key": "amplify-builds/listenChangeOrderTable-3332712f2f766e7a766f-build.zip"
         }
       }
     }
