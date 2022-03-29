@@ -38,13 +38,14 @@ const handleSendMailToMember = async (email) => {
 const getUserInformation = async (userID) => {
   let params = {
     TableName: "UserAddress-gzpe5jhopfh7fnucfxuuwifqry-dev",
-    Key: {
-      userID: userID
+    KeyConditionExpression: 'userID = :userID',
+    ExpressionAttributeValues: {
+      ':userID': userID
     }
   }
-  let response = await docClient.get(params).promise();
+  let response = await docClient.query(params).promise();
   console.log('response: ', response);
-  return response.Item;
+  return response.Items[0];
 }
 
 /**
@@ -56,6 +57,7 @@ exports.handler = async (event) => {
   const eventName = record.eventName;
   const newImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.NewImage);
   if (eventName === 'INSERT' && newImage.statusOrder && (newImage.statusOrder === 'OrderPlaced')) {
+    console.log('vao day');
     const userInformation = await getUserInformation(newImage.userID);
     console.log('userInformation: ', userInformation);
     handleSendMailToMember(userInformation.email);

@@ -18,7 +18,7 @@
       "function": {
         "runPrepareFoods": {
           "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
-          "s3Key": "amplify-builds/runPrepareFoods-4373562b417a53784b61-build.zip"
+          "s3Key": "amplify-builds/runPrepareFoods-49375842547346732b70-build.zip"
         },
         "sendMailErrorToAdmin": {
           "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
@@ -26,7 +26,7 @@
         },
         "listenChangeOrderTable": {
           "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
-          "s3Key": "amplify-builds/listenChangeOrderTable-3332712f2f766e7a766f-build.zip"
+          "s3Key": "amplify-builds/listenChangeOrderTable-2b66576d4430734b3932-build.zip"
         }
       }
     }
