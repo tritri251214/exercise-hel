@@ -34,6 +34,7 @@ const App = ({ signOut, user }) => {
     type: 'success'
   });
   const [loading, setLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
     reload();
@@ -51,6 +52,7 @@ const App = ({ signOut, user }) => {
       let userInformation = await getProfileUserAddress();
       userInformation.role = role;
       setUserInformation(userInformation);
+      setUserInfo(userInformation);
     }
   }
 
@@ -87,18 +89,20 @@ const App = ({ signOut, user }) => {
                   <Nav.Item>
                     <Nav.Link href="/food/list">Foods</Nav.Link>
                   </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link href="/order/list">Orders</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link href="/menu/list">Menu Catalogues</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link href="/profile">Profile</Nav.Link>
-                  </Nav.Item>
+                  {userInfo && userInfo.role === ROLE.ADMIN && (
+                    <>
+                    <Nav.Item>
+                      <Nav.Link href="/order/list">Orders</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link href="/menu/list">Menu Catalogues</Nav.Link>
+                    </Nav.Item>
+                    </>
+                  )}
                 </Nav>
                 <div style={{ position: 'absolute', right: '0', paddingRight: '1rem' }}>
-                  <Link to="/cart">Cart</Link>
+                  <Link to="/cart" className='btn btn-link'>Cart</Link>
+                  <Link to="/profile" className='btn btn-link'>Profile</Link>
                   <Button variant="link" onClick={onSignOut}>
                     {
                       loading ? <AppLoading type="button" /> : 'Logout'

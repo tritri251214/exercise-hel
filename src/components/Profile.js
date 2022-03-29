@@ -1,13 +1,15 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, { useContext, useEffect, useState } from 'react';
-import { Col, Container, Form, Row, Table, Button } from 'react-bootstrap';
+import { Col, Container, Form, Row, Table, Button, Badge } from 'react-bootstrap';
 import NotificationsContext from '../contexts/Notifications';
 import { listOrders } from '../graphql/queries';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
-import { updateUserAddress } from '../graphql/mutations';
+import { updateOrder, updateUserAddress } from '../graphql/mutations';
 import { getUserInformation, setUserInformation } from '../util';
+import moment from 'moment';
+import { STATUS_ORDER } from '../constants';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -75,8 +77,31 @@ const Profile = () => {
     }
   }
 
-  const onDelivered = () => {
-    // TODO
+  const onDelivered = async (order) => {
+    try {
+      setLoading(true);
+      const formData = {
+        id: order.id,
+        userID: order.userID,
+        orderTime: moment().toISOString(),
+        entree: order.entree,
+        mainMeal: order.mainMeal,
+        dessert: order.dessert,
+        statusOrder: order.statusOrder,
+        deliveryAddress: order.deliveryAddress
+      };
+      const response = await API.graphql(graphqlOperation(updateOrder, { input: formData }));
+      if (response?.data?.updateOrder) {
+        notifications({ message: 'Updated order successfully', type: 'success' });
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log('onDelivered error: ', error);
+      if (error && error.errors) {
+        notifications({ message: error.errors[0].message, type: 'error' });
+      }
+      setLoading(false);
+    }
   }
 
   const handleChangeProfile = (event, field) => {
@@ -131,21 +156,27 @@ const Profile = () => {
             <th>Main meal</th>
             <th>Dessert</th>
             <th>Order date</th>
-            <th>Status</th>
+            <th>Status Order</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {ordersHistory && ordersHistory.length === 0 && <EmptyData type='table' colSpan={7} />}
-          {ordersHistory && ordersHistory.length === 0 && ordersHistory.map((order) => (
+          {ordersHistory && ordersHistory.length > 0 && ordersHistory.map((order) => (
             <tr>
-              <td>{order.week}</td>
-              <td>{order.entree}</td>
-              <td>{order.mainMeal}</td>
-              <td>{order.dessert}</td>
-              <td>{order.status}</td>
+              <td>{`Week ${moment(order.week).format('w')}`}</td>
+              <td>{order && order.entree && order.entree.name ? `${order.entree.name} (${order.entree.ordered})` : ''}</td>
+              <td>{order && order.mainMeal && order.mainMeal.name ? `${order.mainMeal.name} (${order.mainMeal.ordered})` : ''}</td>
+              <td>{order && order.dessert && order.dessert.name ? `${order.dessert.name} (${order.dessert.ordered})` : ''}</td>
+              <td>{moment(order.orderTime).format('h:m A DD/MM/YYYY')}</td>
               <td>
-                <Button variant='primary' onClick={onDelivered}>Delivered</Button>
+                {order.statusOrder === STATUS_ORDER.OrderPlaced && <Badge bg="primary">{order.statusOrder}</Badge>}
+                {order.statusOrder === STATUS_ORDER.Picking && <Badge bg="warning">{order.statusOrder}</Badge>}
+                {order.statusOrder === STATUS_ORDER.Delivery && <Badge bg="info">{order.statusOrder}</Badge>}
+                {order.statusOrder === STATUS_ORDER.Delivered && <Badge bg="secondary">{order.statusOrder}</Badge>}
+              </td>
+              <td>
+                {(order.statusOrder === STATUS_ORDER.Delivery) && <Button variant='primary' onClick={() => onDelivered(order)}>Delivered</Button>}
               </td>
             </tr>
           ))}

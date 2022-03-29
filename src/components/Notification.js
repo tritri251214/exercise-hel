@@ -1,22 +1,26 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Toast } from 'react-bootstrap';
 import NotficationsContext from '../contexts/Notifications';
 
 const Notification = (props) => {
+  const [display, setDisplay] = useState(false);
   const context = useContext(NotficationsContext);
 
   useEffect(() => {
     if (props.message) {
+      setDisplay(true);
       setTimeout(() => {
+        setDisplay(false);
         context({ message: '', type: 'success' });
-      }, 5 * 1000);
+      }, 3 * 1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.message]);
 
+  const close = () => setDisplay(false);
+
   return (
-    props.message ?
-    <Toast style={styles.toast}>
+    <Toast style={styles.toast} onClose={close} show={display}>
       <Toast.Header>
         {
           props.type === 'success' ?
@@ -25,7 +29,7 @@ const Notification = (props) => {
         }
       </Toast.Header>
       <Toast.Body>{ props.message }</Toast.Body>
-    </Toast> : ''
+    </Toast>
   );
 };
 

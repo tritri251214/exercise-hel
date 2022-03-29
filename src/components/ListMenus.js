@@ -1,18 +1,25 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Col, Container, Row, Table } from 'react-bootstrap';
+import { Badge, Button, Col, Container, Row, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import NotificationsContext from '../contexts/Notifications';
 import { listMenus } from '../graphql/queries';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
+import moment from 'moment';
+import ConfirmDelete from './ConfirmDelete';
+import { updateMenu } from '../graphql/mutations';
+import { STATUS_MENU } from '../constants';
+import { handleException } from '../util';
 
 const ListMenus = () => {
   const [menus, setMenus] = useState([]);
   const [loading, setLoading] = useState(false);
   const notifications = useContext(NotificationsContext);
   const history = useHistory();
+  const [dialogConfirm, setDialogConfirm] = useState(false);
+  const [infoDelete, setInfoDelete] = useState(null);
 
   useEffect(() => {
     reload();
@@ -22,8 +29,10 @@ const ListMenus = () => {
   async function reload() {
     try {
       const data = await getListMenus();
+      // console.log('data: ', data);
       setMenus(data);
     } catch (error) {
+      await handleException(error);
       console.log('error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
@@ -38,6 +47,7 @@ const ListMenus = () => {
       setLoading(false);
       return response.data.listMenus.items;
     } catch (error) {
+      await handleException(error);
       console.log('getListMenus error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
@@ -51,6 +61,49 @@ const ListMenus = () => {
     history.push('/menu/add');
   }
 
+  const redirectToEditMenu = (menu) => {
+    history.push(`/menu/detail/${menu.id}`);
+  }
+
+  function onOpenConfirmDelete(menu) {
+    setInfoDelete(menu);
+    setDialogConfirm(true);
+  }
+
+  function onCloseConfirmDelete() {
+    setDialogConfirm(false);
+  }
+
+  async function onDeleteMenu() {
+    try {
+      if (!infoDelete && !infoDelete.id) return;
+      let formData = {
+        id: infoDelete.id,
+        week: infoDelete.week,
+        entree: infoDelete.entree,
+        mainMeal: infoDelete.mainMeal,
+        dessert: infoDelete.dessert,
+        statusMenu: STATUS_MENU.Deleted
+      };
+      setLoading(true);
+      const response = await API.graphql(graphqlOperation(updateMenu, { input: formData }));
+      if (response && response.data) {
+        notifications({ message: 'Deleted menu successfully!', type: 'success' });
+        await reload();
+        setInfoDelete(null);
+      }
+      setLoading(false);
+      onCloseConfirmDelete();
+    } catch (error) {
+      await handleException(error);
+      console.log('onDeleteMenu error: ', error);
+      if (error && error.errors) {
+        notifications({ message: error.errors[0].message, type: 'error' });
+      }
+      setLoading(false);
+    }
+  }
+
   const renderMain = () => {
     return (
       <>
@@ -59,25 +112,27 @@ const ListMenus = () => {
         <thead>
           <tr>
             <th>Week</th>
-            <th>Entree</th>
-            <th>Main meal</th>
-            <th>Dessert</th>
-            <th>Status</th>
+            <th>Entree (ordered/quantity)</th>
+            <th>Main meal (ordered/quantity)</th>
+            <th>Dessert (ordered/quantity)</th>
+            <th>Status Menu</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {menus && menus.length === 0 && <EmptyData type='table' colSpan={6} />}
-          {menus && menus.length === 0 && menus.map((menu) => (
-            <tr>
-              <td>{menu.week}</td>
-              <td>{menu.entree}</td>
-              <td>{menu.mainMeal}</td>
-              <td>{menu.dessert}</td>
-              <td>{menu.status}</td>
+          {menus && menus.length > 0 && menus.map((menu) => (
+            <tr key={menu.id}>
+              <td>{`Week ${moment(menu.week).format('w')}`}</td>
+              <td>{menu && menu.entree && menu.entree.name ? `${menu.entree.name} (${menu?.entree?.ordered ? menu?.entree?.ordered : '0'}/${menu?.entree?.quantity})` : ''}</td>
+              <td>{menu && menu.mainMeal && menu.mainMeal.name ? `${menu.mainMeal.name} (${menu?.mainMeal?.ordered ? menu?.mainMeal?.ordered : '0'}/${menu?.mainMeal?.quantity})` : ''}</td>
+              <td>{menu && menu.dessert && menu.dessert.name ? `${menu.dessert.name} (${menu?.dessert?.ordered ? menu?.dessert?.ordered : '0'}/${menu?.dessert?.quantity})` : ''}</td>
               <td>
-                <Button variant='primary'>Edit</Button>
-                <Button variant='danger' className="ml-2">Delete</Button>
+                <Badge bg={menu.statusMenu === STATUS_MENU.Active ? "success" : (menu.statusMenu === STATUS_MENU.Inactive ? "secondary" : "danger")}>{menu.statusMenu}</Badge>
+              </td>
+              <td>
+                <Button variant='primary' onClick={() => redirectToEditMenu(menu)}>Edit</Button>
+                <Button variant='danger' style={{ marginLeft: '0.5rem' }} onClick={() => onOpenConfirmDelete(menu)}>Delete</Button>
               </td>
             </tr>
           ))}
@@ -96,6 +151,14 @@ const ListMenus = () => {
           {renderMain()}
         </Col>
       </Row>
+      <ConfirmDelete
+        dialog={dialogConfirm}
+        loading={loading}
+        handleClose={onCloseConfirmDelete}
+        handleSubmit={onDeleteMenu}
+      >
+        <p>Are you sure want delete <b>Week {infoDelete && infoDelete.week && moment(infoDelete.week).format('w')}</b>?</p>
+      </ConfirmDelete>
     </Container>
   );
 };

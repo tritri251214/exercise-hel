@@ -44,19 +44,19 @@ export const getMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -75,19 +75,19 @@ export const listMenus = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -105,19 +105,19 @@ export const getOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -125,19 +125,19 @@ export const getOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -162,30 +162,61 @@ export const listOrders = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusOrder
         deliveryAddress
         menu {
           id
           week
-          status
+          statusMenu
           createdAt
           updatedAt
         }
         createdAt
         updatedAt
         orderMenuId
+      }
+      nextToken
+    }
+  }
+`;
+export const getUserAddressByUserID = /* GraphQL */ `
+  query GetUserAddressByUserID(
+    $userID: ID!
+    $email: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserAddressFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getUserAddressByUserID(
+      userID: $userID
+      email: $email
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
       }
       nextToken
     }
@@ -215,6 +246,49 @@ export const getUserByEmail = /* GraphQL */ `
         address1
         address2
         address3
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getMenuByStatusMenu = /* GraphQL */ `
+  query GetMenuByStatusMenu(
+    $statusMenu: StatusMenu!
+    $week: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMenuFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    getMenuByStatusMenu(
+      statusMenu: $statusMenu
+      week: $week
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        week
+        entree {
+          name
+          quantity
+          ordered
+        }
+        mainMeal {
+          name
+          quantity
+          ordered
+        }
+        dessert {
+          name
+          quantity
+          ordered
+        }
+        statusMenu
         createdAt
         updatedAt
       }

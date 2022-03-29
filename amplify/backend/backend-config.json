@@ -53,5 +53,17 @@
         ]
       }
     }
+  },
+  "function": {
+    "runPrepareFoods": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "sendMailErrorToAdmin": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
   }
 }

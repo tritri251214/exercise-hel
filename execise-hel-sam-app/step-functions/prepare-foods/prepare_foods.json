@@ -4,12 +4,12 @@
     "States": {
         "PrepareFoods": {
             "Type": "Wait",
-            "TimestampPath": "$.time",
-            "Next": "Delivery"
+            "TimestampPath": "$.orderTime",
+            "Next": "Handle Change Picking To Delivery"
         },
-        "Delivery": {
+        "Handle Change Picking To Delivery": {
             "Type": "Task",
-            "Resource": "${DeliveryFunctionArn}",
+            "Resource": "${ChangePickingToDeliveryFunctionArn}",
             "Retry": [
                 {
                     "ErrorEquals": [

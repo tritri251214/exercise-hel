@@ -1,51 +1,32 @@
 import { API, graphqlOperation } from 'aws-amplify';
 import React, { useContext, useEffect, useState } from 'react';
 import NotificationsContext from '../contexts/Notifications';
-import { listMenus } from '../graphql/queries';
+import { getMenuByStatusMenu } from '../graphql/queries';
 import { Button, Card, Col, Container, Row, Badge } from 'react-bootstrap';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
 import IndexStyles from '../styles';
-import { addItemToCart } from '../util';
-import { TYPE_OF_FOOD } from '../constants';
-
-const dataFoods = [
-  {
-    name: 'Food 1',
-    quantity: 20,
-    remaining: 5,
-    typeOfFood: TYPE_OF_FOOD.entree,
-  },
-  {
-    name: 'Food 2',
-    quantity: 20,
-    remaining: 5,
-    typeOfFood: TYPE_OF_FOOD.mainMeal,
-  },
-  {
-    name: 'Food 3',
-    quantity: 20,
-    remaining: 5,
-    typeOfFood: TYPE_OF_FOOD.dessert,
-  }
-];
+import { addItemToCart, handleException } from '../util';
+import { STATUS_MENU, TYPE_OF_FOOD } from '../constants';
+import moment from 'moment';
 
 const ListFoods = () => {
-  const [foods, setFoods] = useState(dataFoods);
+  const [menu, setMenu] = useState([]);
   const [loading, setLoading] = useState(false);
   const notifications = useContext(NotificationsContext);
 
   useEffect(() => {
-    // reload();
+    reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function reload() {
     try {
-      const data = await getFoodsInWeek();
-      setFoods(data);
+      const data = await getMenuOfWeek();
+      setMenu(data);
     } catch (error) {
+      await handleException(error);
       console.log('error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
@@ -53,20 +34,22 @@ const ListFoods = () => {
     }
   }
 
-  async function getFoodsInWeek() {
+  async function getMenuOfWeek() {
     try {
       setLoading(true);
-      const response = await API.graphql(graphqlOperation(listMenus));
-      const dataListMenus = response.data.listMenus.items;
-      console.log(dataListMenus);
-      // dataListMenus.find(item => {
-      //   if (item.week) {
-
-      //   }
-      // });
+      const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { statusMenu: STATUS_MENU.Active }));
+      const activeMenus = response.data.getMenuByStatusMenu.items;
+      const menuOfWeek = activeMenus.find(item => {
+        const currentWeek = moment().format('w');
+        const dataWeek = moment(item.week).format('w');
+        if (dataWeek === currentWeek) {
+          return item;
+        }
+      });
       setLoading(false);
-      return response.data.listMenus.items;
+      return menuOfWeek;
     } catch (error) {
+      await handleException(error);
       console.log('error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
@@ -85,13 +68,20 @@ const ListFoods = () => {
     }
   }
 
-  const renderCardFood = (food) => {
+  const renderCardFood = (food, typeOfFood) => {
+    if (!food) {
+      return null;
+    }
+    let item = {...food};
+    item.type = typeOfFood;
+    item.menuID = menu.id;
+
     return (
       <Card style={{ width: '18rem' }}>
         <Card.Body>
-          <Card.Title>{food.name} <Badge bg="primary" style={IndexStyles.badge}>{food.remaining}</Badge></Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{food.typeOfFood}</Card.Subtitle>
-          <Button variant="primary" onClick={() => onAddItemToCart(food)}>Add to cart</Button>
+          <Card.Title>{item.name} <Badge bg="primary" style={IndexStyles.badge}>{item.quantity - item.ordered}</Badge></Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">{item.type}</Card.Subtitle>
+          <Button variant="primary" onClick={() => onAddItemToCart(item)}>Add to cart</Button>
         </Card.Body>
       </Card>
     );
@@ -102,13 +92,19 @@ const ListFoods = () => {
       <Header title="Foods Management" />
       {loading && <AppLoading />}
       <Row>
-        {
-          foods && foods.length > 0 ? foods.map((food) => (
-            <Col key={food.name}>
-              {renderCardFood(food)}
+        {menu ? (
+          <>
+            <Col>
+              {renderCardFood(menu.entree, TYPE_OF_FOOD.entree)}
             </Col>
-          )) : <EmptyData />
-        }
+            <Col>
+              {renderCardFood(menu.mainMeal, TYPE_OF_FOOD.mainMeal)}
+            </Col>
+            <Col>
+              {renderCardFood(menu.dessert, TYPE_OF_FOOD.dessert)}
+            </Col>
+          </>
+        ) : <EmptyData />}
       </Row>
     </Container>
   );

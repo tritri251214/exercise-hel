@@ -51,19 +51,19 @@ export const onCreateMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -77,19 +77,19 @@ export const onUpdateMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -103,19 +103,19 @@ export const onDeleteMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -131,19 +131,19 @@ export const onCreateOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -151,19 +151,19 @@ export const onCreateOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -183,19 +183,19 @@ export const onUpdateOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -203,19 +203,19 @@ export const onUpdateOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -235,19 +235,19 @@ export const onDeleteOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -255,19 +255,19 @@ export const onDeleteOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }

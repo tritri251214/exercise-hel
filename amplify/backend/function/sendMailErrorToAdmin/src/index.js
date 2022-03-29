@@ -1,4 +1,3 @@
-// const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const AWS = require("aws-sdk");
 
@@ -8,9 +7,12 @@ AWS.config.update({
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-exports.lambdaHandler = async (event) => {
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
+exports.handler = async (event) => {
     console.log('EVENT: ', event);
-    const { orderTime, email } = event;
+    const message = event.arguments.data.errors[0].message;
 
     let params = {
         TableName: "ConfigMailTrap",
@@ -32,14 +34,14 @@ exports.lambdaHandler = async (event) => {
 
     await transporter.sendMail({
         from: '"Execise Hel" <nmtri3@tma.com.vn>',
-        to: email,
-        subject: `Orders are being delivered`,
-        text: `You have a order are being delivered`,
-        html: `<h2>You have a order are being delivered</h2>`
+        to: "admin@gmail.com",
+        subject: `Happen error in Execise App`,
+        text: `Execise App happen error`,
+        html: `<h2>Execise App happen error:</h2> ${message}`
     });
 
     return {
-        email,
-        orderTime
+        statusCode: 200,
+        message: 'Send mail error to admin successfully'
     };
 };

@@ -21,4 +21,10 @@ const TYPE_OF_FOOD = {
   dessert: 'dessert'
 }
 
-export { ROLE, LOCAL_STORAGE, STATUS_ORDER, TYPE_OF_FOOD };
+const STATUS_MENU = {
+  Active: 'Active',
+  Inactive: 'Inactive',
+  Deleted: 'Deleted'
+}
+
+export { ROLE, LOCAL_STORAGE, STATUS_ORDER, TYPE_OF_FOOD, STATUS_MENU };

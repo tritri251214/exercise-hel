@@ -14,6 +14,16 @@
     "categories": {
       "auth": {
         "exercisehel2165e49f": {}
+      },
+      "function": {
+        "runPrepareFoods": {
+          "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
+          "s3Key": "amplify-builds/runPrepareFoods-4373562b417a53784b61-build.zip"
+        },
+        "sendMailErrorToAdmin": {
+          "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
+          "s3Key": "amplify-builds/sendMailErrorToAdmin-6b314946373037746c32-build.zip"
+        }
       }
     }
   }

@@ -14,7 +14,7 @@ enum StatusOrder {
 type Food {
   name: String
   quantity: Int
-  remaining: Int
+  ordered: Int
 }
 
 type UserAddress
@@ -29,7 +29,7 @@ type UserAddress
 )
 {
   id: ID!
-  userID: ID!
+  userID: ID! @index(name: "byUserID", sortKeyFields: ["email"], queryField: "getUserAddressByUserID")
   email: String! @index(name: "byEmail", sortKeyFields: ["userID"], queryField: "getUserByEmail")
   address1: String
   address2: String
@@ -52,7 +52,7 @@ type Menu
   entree: Food
   mainMeal: Food
   dessert: Food
-  status: StatusMenu!
+  statusMenu: StatusMenu! @index(name: "byStatusMenu", sortKeyFields: ["week"], queryField: "getMenuByStatusMenu")
 }
 
 type Order
@@ -73,7 +73,12 @@ type Order
   entree: Food
   mainMeal: Food
   dessert: Food
-  status: StatusOrder
+  statusOrder: StatusOrder
   deliveryAddress: String
   menu: Menu @hasOne
+}
+
+type Mutation {
+	runPrepareFoods(data: AWSJSON): AWSJSON @function(name: "runPrepareFoods-dev"),
+  sendMailErrorToAdmin(data: AWSJSON): AWSJSON @function(name: "sendMailErrorToAdmin-dev")
 }

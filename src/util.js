@@ -1,4 +1,6 @@
+import { API, graphqlOperation } from "aws-amplify";
 import { LOCAL_STORAGE } from "./constants";
+import { sendMailErrorToAdmin } from "./graphql/mutations";
 
 export function convertDate(date) {
   let d = new Date(date);
@@ -91,6 +93,15 @@ export function changeNumberOfFoodInCart(food) {
   }
 }
 
-export function cleartLocalStorage() {
+export function clearCart() {
+  localStorage.removeItem(LOCAL_STORAGE.userCart);
+}
+
+export function clearLocalStorage() {
   localStorage.clear();
+}
+
+export async function handleException(error) {
+  const response = await API.graphql(graphqlOperation(sendMailErrorToAdmin, { data: JSON.stringify(error) }));
+  console.log('handleException info: ', response);
 }

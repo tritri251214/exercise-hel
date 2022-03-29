@@ -1,6 +1,16 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const runPrepareFoods = /* GraphQL */ `
+  mutation RunPrepareFoods($data: AWSJSON) {
+    runPrepareFoods(data: $data)
+  }
+`;
+export const sendMailErrorToAdmin = /* GraphQL */ `
+  mutation SendMailErrorToAdmin($data: AWSJSON) {
+    sendMailErrorToAdmin(data: $data)
+  }
+`;
 export const createUserAddress = /* GraphQL */ `
   mutation CreateUserAddress(
     $input: CreateUserAddressInput!
@@ -63,19 +73,19 @@ export const createMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -92,19 +102,19 @@ export const updateMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -121,19 +131,19 @@ export const deleteMenu = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusMenu
       createdAt
       updatedAt
     }
@@ -152,19 +162,19 @@ export const createOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -172,19 +182,19 @@ export const createOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -207,19 +217,19 @@ export const updateOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -227,19 +237,19 @@ export const updateOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }
@@ -262,19 +272,19 @@ export const deleteOrder = /* GraphQL */ `
       entree {
         name
         quantity
-        remaining
+        ordered
       }
       mainMeal {
         name
         quantity
-        remaining
+        ordered
       }
       dessert {
         name
         quantity
-        remaining
+        ordered
       }
-      status
+      statusOrder
       deliveryAddress
       menu {
         id
@@ -282,19 +292,19 @@ export const deleteOrder = /* GraphQL */ `
         entree {
           name
           quantity
-          remaining
+          ordered
         }
         mainMeal {
           name
           quantity
-          remaining
+          ordered
         }
         dessert {
           name
           quantity
-          remaining
+          ordered
         }
-        status
+        statusMenu
         createdAt
         updatedAt
       }

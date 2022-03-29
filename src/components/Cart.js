@@ -4,19 +4,22 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, CloseButton, Button, Form, Card } from 'react-bootstrap';
 import { STATUS_ORDER, TYPE_OF_FOOD } from '../constants';
 import NotificationsContext from '../contexts/Notifications';
-import { createOrder } from '../graphql/mutations';
+import { createOrder, updateMenu } from '../graphql/mutations';
+import { getMenu } from '../graphql/queries';
 import IndexStyles from '../styles';
-import { changeNumberOfFoodInCart, getCart, getUserInformation } from '../util';
+import { changeNumberOfFoodInCart, clearCart, getCart, getUserInformation, handleException } from '../util';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
 
-const Cart = (props) => {
+const Cart = () => {
   const notifications = useContext(NotificationsContext);
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(false);
   const [listAddress, setListAddress] = useState([]);
   const [userInformation, setUserInformation] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [loadingBuyNow, setLoadingBuyNow] = useState(false);
 
   useEffect(() => {
     reload();
@@ -25,6 +28,7 @@ const Cart = (props) => {
 
   async function reload() {
     try {
+      setLoading(true);
       const userCart = getCart();
       setFoods(userCart);
       const result = getUserInformation();
@@ -32,21 +36,30 @@ const Cart = (props) => {
         const userInformationAddress = [result.address1, result.address2, result.address3];
         setListAddress(userInformationAddress);
         setUserInformation(result);
+        setSelectedAddress(result.address1);
       }
+      setLoading(false);
     } catch (error) {
+      await handleException(error);
       console.log('reload error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
       }
+      setLoading(false);
     }
   }
 
   const onChangeNumberOfFood = (event, food) => {
     let newFood = {...food};
     newFood.order = event.target.value;
+    if (event.target.value > newFood.quantity) {
+      notifications({ message: 'food limit exceeded', type: 'error' });
+      return;
+    }
+
     const result = changeNumberOfFoodInCart(newFood);
     if (result.status !== 200) {
-      notifications({ message: result.message, type: 'error' });
+      console.error('onChangeNumberOfFood error: ', result.message);
     } else {
       setFoods((cur) => {
         let newCur = [...cur];
@@ -56,7 +69,7 @@ const Cart = (props) => {
         }
         return newCur;
       });
-      notifications({ message: result.message, type: 'success' });
+      console.log('onChangeNumberOfFood info: ', result.message);
     }
   }
 
@@ -64,52 +77,93 @@ const Cart = (props) => {
     try {
       let entree = null; let mainMeal = null; let dessert = null;
       foods.map(food => {
-        switch (food.typeOfFood) {
+        switch (food.type) {
           case TYPE_OF_FOOD.entree:
             entree = {
               name: food.name,
               quantity: food.quantity,
-              remaining: food.remaining
+              ordered: food.order
             };
             break;
           case TYPE_OF_FOOD.mainMeal:
             mainMeal = {
               name: food.name,
               quantity: food.quantity,
-              remaining: food.remaining
+              ordered: food.order
             };
             break;
           case TYPE_OF_FOOD.dessert:
             dessert = {
               name: food.name,
               quantity: food.quantity,
-              remaining: food.remaining
+              ordered: food.order
             };
             break;
           default:
             break;
         }
       });
-
+      setLoadingBuyNow(true);
       const formData = {
         userID: userInformation.userID,
-        menuID: '',
-        orderTime: moment(),
+        menuID: foods[0].menuID,
+        orderTime: moment().toISOString(),
         entree,
         mainMeal,
         dessert,
-        status: STATUS_ORDER.OrderPlaced
+        statusOrder: STATUS_ORDER.OrderPlaced,
+        deliveryAddress: selectedAddress
       };
       const response = await API.graphql(graphqlOperation(createOrder, { input: formData }));
       if (response?.data?.createOrder) {
-        notifications({ message: 'Add order successfully, please check email to see status of the order' });
+        await updateOrderInMenuTable(response?.data?.createOrder);
+        notifications({ message: 'Add order successfully, please check email to see status of the order', type: 'success' });
       }
+      clearCart();
+      setLoadingBuyNow(false);
+      await reload();
     } catch (error) {
+      await handleException(error);
       console.log('onBuyNow error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
       }
+      setLoadingBuyNow(false);
     }
+  }
+
+  const updateOrderInMenuTable = async (data) => {
+    if (!data) {
+      console.error('updateOrderInMenuTable empty data');
+      return;
+    }
+    try {
+      const resMenu = await API.graphql(graphqlOperation(getMenu, { id: foods[0].menuID }));
+      const menuInfo = resMenu.data.getMenu;
+      let formData = {
+        id: menuInfo.id,
+        week: menuInfo.week,
+        entree: menuInfo.entree,
+        mainMeal: menuInfo.mainMeal,
+        dessert: menuInfo.dessert,
+        statusMenu: menuInfo.statusMenu
+      };
+      formData.entree.ordered = data.entree && data.entree.ordered ? menuInfo.entree.ordered + data.entree.ordered : menuInfo.entree.ordered;
+      formData.mainMeal.ordered = data.mainMeal && data.mainMeal.ordered ? menuInfo.mainMeal.ordered + data.mainMeal.ordered : menuInfo.mainMeal.ordered;
+      formData.dessert.ordered = data.dessert && data.dessert.ordered ? menuInfo.dessert.ordered + data.dessert.ordered : menuInfo.dessert.ordered;
+      const response = await API.graphql(graphqlOperation(updateMenu, { input: formData }));
+      console.log('updateOrderInMenuTable info: ', response);
+    } catch (error) {
+      await handleException(error);
+      console.log('updateOrderInMenuTable error: ', error);
+      if (error && error.errors) {
+        notifications({ message: error.errors[0].message, type: 'error' });
+      }
+    }
+  }
+
+  const onChangeRadioAddress = (address) => {
+    setSelectedAddress(address);
   }
 
   const renderCardFood = (food) => {
@@ -124,14 +178,14 @@ const Cart = (props) => {
             {food.name}
             <CloseButton style={IndexStyles.closeButton} />
           </Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{food.typeOfFood}</Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted">{food.type}</Card.Subtitle>
           <Form.Control
               type="number"
               id="numberOfFood"
               value={food.order}
               onChange={(event) => onChangeNumberOfFood(event, food)}
               min={1}
-              max={food.remaining}
+              max={food.quantity}
             />
         </Card.Body>
       </Card>
@@ -146,7 +200,9 @@ const Cart = (props) => {
         <Col md={3}>
         {
           foods && foods.length > 0 ? foods.map((food) => (
-            renderCardFood(food)
+            <div key={food.name}>
+              {renderCardFood(food)}
+            </div>
           )) : <EmptyData />
         }
         </Col>
@@ -156,11 +212,15 @@ const Cart = (props) => {
           <div className="mb-3">
             {listAddress && listAddress.length > 0 && listAddress.map((address, index) => (
               <Form.Check
+                key={address}
+                value={address}
                 inline
                 label={address}
                 name="address"
                 type="radio"
                 id={`rad-${index}`}
+                checked={selectedAddress === address}
+                onChange={() => onChangeRadioAddress(address)}
               />
             ))}
           </div>
@@ -168,7 +228,9 @@ const Cart = (props) => {
       </Row>
       <Row>
         <Col>
-          <Button variant="primary" onClick={onBuyNow}>Buy now</Button>
+          <Button variant="primary" onClick={onBuyNow}>
+            {loadingBuyNow ? <AppLoading type="button" /> : 'Buy now'}
+          </Button>
         </Col>
       </Row>
     </Container>
