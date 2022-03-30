@@ -17,6 +17,9 @@ const IndexStyles = {
   closeButton: {
     position: 'absolute',
     right: '1rem'
+  },
+  cartImg: {
+    width: '1.5rem'
   }
 };
 

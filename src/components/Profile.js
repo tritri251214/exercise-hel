@@ -7,9 +7,9 @@ import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
 import { updateOrder, updateUserAddress } from '../graphql/mutations';
-import { getUserInformation, setUserInformation } from '../util';
+import { getUserInformation, handleException, setUserInformation } from '../util';
 import moment from 'moment';
-import { STATUS_ORDER } from '../constants';
+import { ROLE, STATUS_ORDER } from '../constants';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -27,10 +27,11 @@ const Profile = () => {
     try {
       const userInformation = getUserInformation();
       setProfile(userInformation);
-      const data = await getOrdersHistory(userInformation.id);
+      const data = await getOrdersHistory(userInformation.userID);
       setOrdersHistory(data);
     } catch (error) {
-      console.log('error: ', error);
+      await handleException(error);
+      console.log('reload error: ', error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
       }
@@ -164,7 +165,7 @@ const Profile = () => {
         <tbody>
           {ordersHistory && ordersHistory.length === 0 && <EmptyData type='table' colSpan={7} />}
           {ordersHistory && ordersHistory.length > 0 && ordersHistory.map((order) => (
-            <tr>
+            <tr key={order.id}>
               <td>{`Week ${moment(order.week).format('w')}`}</td>
               <td>{order && order.entree && order.entree.name ? `${order.entree.name} (${order.entree.ordered})` : ''}</td>
               <td>{order && order.mainMeal && order.mainMeal.name ? `${order.mainMeal.name} (${order.mainMeal.ordered})` : ''}</td>
@@ -194,9 +195,9 @@ const Profile = () => {
       <Row>
         <Col>{renderProfile()}</Col>
       </Row>
-      <Row>
+      {profile && profile.role === ROLE.MEMBER && <Row>
         <Col>{renderOrdersHistory()}</Col>
-      </Row>
+      </Row>}
     </Container>
   );
 };

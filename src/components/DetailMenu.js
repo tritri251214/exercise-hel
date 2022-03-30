@@ -98,7 +98,7 @@ const DetailMenu = () => {
         entree: menu.entree,
         mainMeal: menu.mainMeal,
         dessert: menu.dessert,
-        status: selectedStatusMenu
+        statusMenu: selectedStatusMenu
       };
       if (menuID) {
         formData.id = menuID;
@@ -127,7 +127,7 @@ const DetailMenu = () => {
 
   const existsActiveOfWeek = async () => {
     try {
-      const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { status: STATUS_MENU.Active }));
+      const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { statusMenu: STATUS_MENU.Active }));
       const menus = response?.data?.getMenuByStatusMenu?.items;
       const index = menus.findIndex(item => {
         const formatWeek = moment(item.week).format('w');

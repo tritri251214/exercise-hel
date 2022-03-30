@@ -35,30 +35,23 @@ const handleSendMailToMember = async (email) => {
   });
 }
 
-const getUserInformation = async (userID) => {
+const getUserInformation = async (id) => {
   let params = {
     TableName: "UserAddress-gzpe5jhopfh7fnucfxuuwifqry-dev",
     IndexName: 'byUserID',
     KeyConditionExpression: 'userID = :userID',
     ExpressionAttributeValues: {
-      ':userID': userID
+      ':userID': id
     }
   }
   let response = await docClient.query(params).promise();
   return response.Items[0];
 }
 
-/**
- * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
- */
-exports.handler = async (event) => {
-  console.log('EVENT: ', event.Records[0]);
-  const record = event.Records[0];
-  const eventName = record.eventName;
-  const newImage = AWS.DynamoDB.Converter.unmarshall(record.dynamodb.NewImage);
-  if (eventName === 'INSERT' && newImage.statusOrder && (newImage.statusOrder === 'OrderPlaced')) {
-    const userInformation = await getUserInformation(newImage.userID);
-    await handleSendMailToMember(userInformation.email);
-    console.log('Send mail successfully');
-  }
-};
+const userID = "0e521f2f-db6b-429b-b3e5-e113b5cbdb68";
+getUserInformation(userID).then(async (userInformation) => {
+  console.log('userInformation: ', userInformation);
+  const response = await handleSendMailToMember(userInformation.email);
+  console.log('handleSendMailToMember: ', response);
+});
+

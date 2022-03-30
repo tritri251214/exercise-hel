@@ -52,7 +52,7 @@ const Cart = () => {
   const onChangeNumberOfFood = (event, food) => {
     let newFood = {...food};
     newFood.order = event.target.value;
-    if (event.target.value > newFood.quantity) {
+    if (event.target.value > (newFood.quantity - newFood.ordered)) {
       notifications({ message: 'food limit exceeded', type: 'error' });
       return;
     }
@@ -123,8 +123,8 @@ const Cart = () => {
       setLoadingBuyNow(false);
       await reload();
     } catch (error) {
-      await handleException(error);
       console.log('onBuyNow error: ', error);
+      await handleException(error);
       if (error && error.errors) {
         notifications({ message: error.errors[0].message, type: 'error' });
       }

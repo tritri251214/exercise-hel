@@ -79,7 +79,7 @@ const ListFoods = () => {
     const remaining = item.quantity - item.ordered;
 
     return (
-      <Card style={{ width: '18rem' }}>
+      <Card>
         <Card.Body>
           <Card.Title>{item.name} <Badge bg="primary" style={IndexStyles.badge}>{remaining}</Badge></Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{item.type}</Card.Subtitle>

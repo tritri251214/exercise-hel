@@ -7,10 +7,10 @@ import {
 } from 'react-router-dom';
 import '@aws-amplify/ui-react/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Container, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Image, Nav, Navbar } from 'react-bootstrap';
 import Notification from './components/Notification';
 import NotificationsContext from './contexts/Notifications';
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import Amplify, { API, Auth, graphqlOperation, Hub } from 'aws-amplify';
 import awsExports from './aws-exports';
 import ListFoods from './components/ListFoods';
 import { withAuthenticator } from '@aws-amplify/ui-react';
@@ -24,7 +24,9 @@ import { getUserByEmail } from './graphql/queries';
 import { createUserAddress } from './graphql/mutations';
 import { Link } from 'react-router-dom';
 import AppLoading from './components/AppLoading';
-import { setUserInformation } from './util';
+import { clearLocalStorage, setUserInformation } from './util';
+import cartImg from './images/cart.jpg';
+import IndexStyles from './styles/index';
 
 Amplify.configure(awsExports);
 
@@ -35,6 +37,15 @@ const App = ({ signOut, user }) => {
   });
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    Hub.listen('auth', ({ payload: { event, }}) => {
+      if (event === 'signOut') {
+        clearLocalStorage();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     reload();
@@ -101,8 +112,10 @@ const App = ({ signOut, user }) => {
                   )}
                 </Nav>
                 <div style={{ position: 'absolute', right: '0', paddingRight: '1rem' }}>
-                  <Link to="/cart" className='btn btn-link'>Cart</Link>
-                  <Link to="/profile" className='btn btn-link'>Profile</Link>
+                  <Link to="/cart" className='btn btn-link'>
+                    <Image src={cartImg} style={IndexStyles.cartImg} /> Cart
+                  </Link>
+                  <Link to="/profile" className='btn btn-link'>{userInfo && userInfo.email}</Link>
                   <Button variant="link" onClick={onSignOut}>
                     {
                       loading ? <AppLoading type="button" /> : 'Logout'

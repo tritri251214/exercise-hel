@@ -98,10 +98,12 @@ export function clearCart() {
 }
 
 export function clearLocalStorage() {
-  localStorage.clear();
+  localStorage.removeItem(LOCAL_STORAGE.userCart);
+  localStorage.removeItem(LOCAL_STORAGE.userInformation);
 }
 
 export async function handleException(error) {
-  const response = await API.graphql(graphqlOperation(sendMailErrorToAdmin, { data: JSON.stringify(error) }));
-  console.log('handleException info: ', response);
+  if (error && error.errors) {
+    await API.graphql(graphqlOperation(sendMailErrorToAdmin, { data: JSON.stringify(error) }));
+  }
 }
