@@ -40,55 +40,18 @@ Resources:
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
 
-  # ChangePickingToDeliveryFunctionExecutionRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: !Ref ChangePickingToDeliveryFunction
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - lambda.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
+  EventHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/event-handler
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
 
-  # SendMailToMemberFunctionExecutionRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: !Ref SendMailToMemberFunction
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - lambda.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-
-  # lambdaexecutionpolicy:
-  #   DependsOn:
-  #     - ChangePickingToDeliveryFunctionExecutionRole
-  #     - SendMailToMemberFunctionExecutionRole
-  #   Type: AWS::IAM::Policy
-  #   Properties:
-  #     PolicyName: handle-meeting-lambda-execution-policy
-  #     Roles:
-  #       - Ref: ChangePickingToDeliveryFunctionExecutionRole
-  #       - Ref: SendMailToMemberFunctionExecutionRole
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Action:
-  #             - 'dynamodb:GetItem'
-  #             - 'dynamodb:PutItem'
-  #             - 'dynamodb:UpdateItem'
-  #             - 'dynamodb:Query'
-  #           Effect: Allow
-  #           Resource:
-  #             - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*"
+  EventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      FunctionName: !Ref EventHandlerFunction
+      Enabled: true
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

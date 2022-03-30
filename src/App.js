@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Container, Image, Nav, Navbar } from 'react-bootstrap';
 import Notification from './components/Notification';
 import NotificationsContext from './contexts/Notifications';
-import Amplify, { API, Auth, graphqlOperation, Hub } from 'aws-amplify';
+import Amplify, { API, graphqlOperation, Hub } from 'aws-amplify';
 import awsExports from './aws-exports';
 import ListFoods from './components/ListFoods';
 import { withAuthenticator } from '@aws-amplify/ui-react';

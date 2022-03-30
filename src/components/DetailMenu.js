@@ -129,12 +129,7 @@ const DetailMenu = () => {
     try {
       const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { statusMenu: STATUS_MENU.Active }));
       const menus = response?.data?.getMenuByStatusMenu?.items;
-      const index = menus.findIndex(item => {
-        const formatWeek = moment(item.week).format('w');
-        if ((formatWeek === selectedWeek) && (item.status === STATUS_MENU.Active) && (item.id !== menuID)) {
-          return item;
-        }
-      });
+      const index = menus.findIndex(item => moment(item.week).format('w') === selectedWeek && item.id !== menuID);
 
       if (index > -1) {
         return true;

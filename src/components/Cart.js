@@ -107,6 +107,7 @@ const Cart = () => {
       const formData = {
         userID: userInformation.userID,
         menuID: foods[0].menuID,
+        userAddressID: userInformation.id,
         orderTime: moment().toISOString(),
         entree,
         mainMeal,

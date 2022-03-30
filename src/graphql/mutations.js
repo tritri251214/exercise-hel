@@ -158,6 +158,7 @@ export const createOrder = /* GraphQL */ `
       id
       userID
       menuID
+      userAddressID
       orderTime
       entree {
         name
@@ -198,9 +199,20 @@ export const createOrder = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userAddress {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       orderMenuId
+      orderUserAddressId
     }
   }
 `;
@@ -213,6 +225,7 @@ export const updateOrder = /* GraphQL */ `
       id
       userID
       menuID
+      userAddressID
       orderTime
       entree {
         name
@@ -253,9 +266,20 @@ export const updateOrder = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userAddress {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       orderMenuId
+      orderUserAddressId
     }
   }
 `;
@@ -268,6 +292,7 @@ export const deleteOrder = /* GraphQL */ `
       id
       userID
       menuID
+      userAddressID
       orderTime
       entree {
         name
@@ -308,9 +333,20 @@ export const deleteOrder = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userAddress {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       orderMenuId
+      orderUserAddressId
     }
   }
 `;

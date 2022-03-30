@@ -206,6 +206,7 @@ export const getOrder = /* GraphQL */ `
       id
       userID
       menuID
+      userAddressID
       orderTime
       entree {
         name
@@ -246,9 +247,20 @@ export const getOrder = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      userAddress {
+        id
+        userID
+        email
+        address1
+        address2
+        address3
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       orderMenuId
+      orderUserAddressId
     }
   }
 `;
@@ -263,6 +275,7 @@ export const listOrders = /* GraphQL */ `
         id
         userID
         menuID
+        userAddressID
         orderTime
         entree {
           name
@@ -288,9 +301,20 @@ export const listOrders = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        userAddress {
+          id
+          userID
+          email
+          address1
+          address2
+          address3
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
         orderMenuId
+        orderUserAddressId
       }
       nextToken
     }
@@ -317,6 +341,7 @@ export const getMenuByUserID = /* GraphQL */ `
         id
         userID
         menuID
+        userAddressID
         orderTime
         entree {
           name
@@ -342,9 +367,20 @@ export const getMenuByUserID = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        userAddress {
+          id
+          userID
+          email
+          address1
+          address2
+          address3
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
         orderMenuId
+        orderUserAddressId
       }
       nextToken
     }

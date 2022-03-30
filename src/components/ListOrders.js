@@ -100,6 +100,7 @@ const ListOrders = () => {
             <th>Main meal</th>
             <th>Dessert</th>
             <th>Status Order</th>
+            <th>Delivery Address</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -118,6 +119,7 @@ const ListOrders = () => {
                 {order.statusOrder === STATUS_ORDER.Delivery && <Badge bg="info">{order.statusOrder}</Badge>}
                 {order.statusOrder === STATUS_ORDER.Delivered && <Badge bg="secondary">{order.statusOrder}</Badge>}
               </td>
+              <td>{order.deliveryAddress}</td>
               <td>
                 {order.statusOrder === STATUS_ORDER.OrderPlaced && <Button variant='primary' onClick={() => onPicking(order)}>Picking</Button>}
               </td>

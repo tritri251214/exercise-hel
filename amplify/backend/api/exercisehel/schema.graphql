@@ -68,7 +68,8 @@ type Order
 {
   id: ID!
   userID: ID! @index(name: "byUserID", sortKeyFields: ["id"], queryField: "getMenuByUserID")
-  menuID: ID
+  menuID: ID!
+  userAddressID: ID!
   orderTime: AWSDateTime!
   entree: Food
   mainMeal: Food
@@ -76,6 +77,7 @@ type Order
   statusOrder: StatusOrder
   deliveryAddress: String
   menu: Menu @hasOne
+  userAddress: UserAddress @hasOne
 }
 
 type Mutation {

@@ -39,13 +39,7 @@ const ListFoods = () => {
       setLoading(true);
       const response = await API.graphql(graphqlOperation(getMenuByStatusMenu, { statusMenu: STATUS_MENU.Active }));
       const activeMenus = response.data.getMenuByStatusMenu.items;
-      const menuOfWeek = activeMenus.find(item => {
-        const currentWeek = moment().format('w');
-        const dataWeek = moment(item.week).format('w');
-        if (dataWeek === currentWeek) {
-          return item;
-        }
-      });
+      const menuOfWeek = activeMenus.find(item => moment().format('w') === moment(item.week).format('w'));
       setLoading(false);
       return menuOfWeek;
     } catch (error) {
