@@ -6,6 +6,8 @@ AWS.config.update({
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
+const eventBridge = new AWS.EventBridge();
+const eventUserID = "0e521f2f-db6b-429b-b3e5-e113b5cbdb68";
 
 const handleSendMailToMember = async (email) => {
   let params = {
@@ -35,23 +37,41 @@ const handleSendMailToMember = async (email) => {
   });
 }
 
-const getUserInformation = async (id) => {
+const getUserInformation = async (userID) => {
   let params = {
     TableName: "UserAddress-gzpe5jhopfh7fnucfxuuwifqry-dev",
     IndexName: 'byUserID',
     KeyConditionExpression: 'userID = :userID',
     ExpressionAttributeValues: {
-      ':userID': id
+      ':userID': userID
     }
   }
   let response = await docClient.query(params).promise();
   return response.Items[0];
 }
 
-const userID = "0e521f2f-db6b-429b-b3e5-e113b5cbdb68";
-getUserInformation(userID).then(async (userInformation) => {
-  console.log('userInformation: ', userInformation);
-  const response = await handleSendMailToMember(userInformation.email);
-  console.log('handleSendMailToMember: ', response);
-});
+const eventBridgeFunction = async () => {
+  // const params = {
+  //   Entries: [
+  //     {
+  //       Detail: JSON.stringify({ test: "hello-word" }),
+  //       DetailType: 'ChangeOrderTable',
+  //       EventBusName: 'EventDynamoDBStreams',
+  //       Source: 'exercise.hel'
+  //     }
+  //   ]
+  // };
+  // const response = await eventBridge.putEvents(params).promise();
+  const response = await eventBridge.listRules().promise();
+  console.log('response: ', response);
+}
+
+const handler = async (userID) => {
+  // const userInformation = await getUserInformation(userID);
+  // await handleSendMailToMember(userInformation.email);
+  // console.log('Send mail successfully');
+  await eventBridgeFunction();
+};
+
+handler(eventUserID);
 

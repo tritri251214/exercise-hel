@@ -47,19 +47,16 @@ Resources:
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
 
-  EventSourceMapping:
-    Type: AWS::Lambda::EventSourceMapping
-    Properties:
-      FunctionName: !Ref EventHandlerFunction
-      Enabled: true
+  # EventSourceMapping:
+  #   Type: AWS::Lambda::EventSourceMapping
+  #   Properties:
+  #     FunctionName: !Ref EventHandlerFunction
+  #     Enabled: true
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   PrepareFoodsStepFunctionArn:
-    Description: "Prepare foods step function ARN"
+    Description: 'Prepare foods step function ARN'
     Value: !Ref PrepareFoodsStepFunction
   PrepareFoodsStepFunctionRole:
-    Description: "IAM Role created for prepare foods step function based on the specified SAM Policy Templates"
+    Description: 'IAM Role created for prepare foods step function based on the specified SAM Policy Templates'
     Value: !GetAtt PrepareFoodsStepFunctionRole.Arn

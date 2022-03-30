@@ -26,7 +26,7 @@
         },
         "listenChangeOrderTable": {
           "deploymentBucketName": "amplify-exercisehel-dev-161136-deployment",
-          "s3Key": "amplify-builds/listenChangeOrderTable-2b66576d4430734b3932-build.zip"
+          "s3Key": "amplify-builds/listenChangeOrderTable-654a47576b46364a4c70-build.zip"
         }
       }
     }
