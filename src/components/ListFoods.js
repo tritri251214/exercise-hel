@@ -76,8 +76,8 @@ const ListFoods = () => {
       <Card>
         <Card.Body>
           <Card.Title>{item.name} <Badge bg="primary" style={IndexStyles.badge}>{remaining}</Badge></Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">{item.type}</Card.Subtitle>
-          <Button variant="primary" onClick={() => onAddItemToCart(item)} disabled={remaining === 0}>Add to cart</Button>
+          <Card.Subtitle className="mb-2 text-muted">{item.type === TYPE_OF_FOOD.mainMeal ? 'main meal' : item.type}</Card.Subtitle>
+          <Button variant="primary" size="sm" onClick={() => onAddItemToCart(item)} disabled={remaining === 0}>Add to cart</Button>
         </Card.Body>
       </Card>
     );

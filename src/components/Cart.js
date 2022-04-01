@@ -7,7 +7,7 @@ import NotificationsContext from '../contexts/Notifications';
 import { createOrder, updateMenu } from '../graphql/mutations';
 import { getMenu } from '../graphql/queries';
 import IndexStyles from '../styles';
-import { changeNumberOfFoodInCart, clearCart, getCart, getUserInformation, handleException } from '../util';
+import { changeNumberOfFoodInCart, clearCart, getCart, getUserInformation, handleException, removeItemInCart } from '../util';
 import AppLoading from './AppLoading';
 import EmptyData from './EmptyData';
 import Header from './Header';
@@ -167,6 +167,13 @@ const Cart = () => {
     setSelectedAddress(address);
   }
 
+  const handleRemoveItemCart = async (food) => {
+    const result = removeItemInCart(food);
+    if (result.status === 200) {
+      await reload();
+    }
+  }
+
   const renderCardFood = (food) => {
     if (!food) {
       return null;
@@ -177,7 +184,7 @@ const Cart = () => {
         <Card.Body>
           <Card.Title>
             {food.name}
-            <CloseButton style={IndexStyles.closeButton} />
+            <CloseButton style={IndexStyles.closeButton} onClick={() => handleRemoveItemCart(food)} />
           </Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{food.type}</Card.Subtitle>
           <Form.Control
@@ -229,7 +236,7 @@ const Cart = () => {
       </Row>
       <Row>
         <Col>
-          <Button variant="primary" onClick={onBuyNow}>
+          <Button variant="primary" onClick={onBuyNow} size="sm">
             {loadingBuyNow ? <AppLoading type="button" /> : 'Buy now'}
           </Button>
         </Col>

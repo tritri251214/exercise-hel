@@ -121,7 +121,7 @@ const ListOrders = () => {
               </td>
               <td>{order.deliveryAddress}</td>
               <td>
-                {order.statusOrder === STATUS_ORDER.OrderPlaced && <Button variant='primary' onClick={() => onPicking(order)}>Picking</Button>}
+                {order.statusOrder === STATUS_ORDER.OrderPlaced && <Button variant='primary' size="sm" onClick={() => onPicking(order)}>Picking</Button>}
               </td>
             </tr>
           ))}

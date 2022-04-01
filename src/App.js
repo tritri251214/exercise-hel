@@ -39,7 +39,7 @@ const App = ({ signOut, user }) => {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    Hub.listen('auth', ({ payload: { event, }}) => {
+    Hub.listen('auth', ({ payload: { event }}) => {
       if (event === 'signOut') {
         clearLocalStorage();
       }

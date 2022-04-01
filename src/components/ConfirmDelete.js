@@ -11,10 +11,10 @@ const ConfirmDelete = (props) => {
       </Modal.Header>
       <Modal.Body>{ children }</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose} size="sm">
           Cancel
         </Button>
-        <Button variant="success" type="submit" onClick={handleSubmit}>
+        <Button variant="success" size="sm" onClick={handleSubmit}>
           {
             loading ?
             <Spinner

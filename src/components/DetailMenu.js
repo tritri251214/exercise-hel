@@ -162,7 +162,7 @@ const DetailMenu = () => {
           <p>Sorry, The first, you must change <b>Inactive</b> all menu that have week same as this week</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" size="sm" onClick={handleCloseModal}>
             Cancel
           </Button>
         </Modal.Footer>
@@ -243,7 +243,7 @@ const DetailMenu = () => {
           </Form.Select>
         </Form.Group>
 
-        <Button variant="primary" onClick={handleSubmit}>
+        <Button variant="primary" size="sm" onClick={handleSubmit}>
           {loadingSubmit ? <AppLoading type="button" /> : 'Submit a menu catalogue'}
         </Button>
       </Form>

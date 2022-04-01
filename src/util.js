@@ -57,6 +57,10 @@ export function removeItemInCart(food) {
     if (index > -1) {
       userCart.splice(index, 1);
       localStorage.setItem(LOCAL_STORAGE.userCart, JSON.stringify(userCart));
+      return {
+        status: 200,
+        message: 'Remove item successfully'
+      }
     }
   } else {
     localStorage.setItem(LOCAL_STORAGE.userCart, JSON.stringify([]));

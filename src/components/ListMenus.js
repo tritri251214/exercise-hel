@@ -12,6 +12,7 @@ import ConfirmDelete from './ConfirmDelete';
 import { updateMenu } from '../graphql/mutations';
 import { STATUS_MENU } from '../constants';
 import { handleException } from '../util';
+import { sortBy } from 'lodash';
 
 const ListMenus = () => {
   const [menus, setMenus] = useState([]);
@@ -28,8 +29,11 @@ const ListMenus = () => {
 
   async function reload() {
     try {
-      const data = await getListMenus();
-      // console.log('data: ', data);
+      let data = [];
+      const dataRes = await getListMenus();
+      if (dataRes && dataRes.length > 0) {
+        data = sortBy(dataRes, ['week']);
+      }
       setMenus(data);
     } catch (error) {
       await handleException(error);
@@ -107,7 +111,7 @@ const ListMenus = () => {
   const renderMain = () => {
     return (
       <>
-      <Button variant='primary' className="mb-3" onClick={redirectToAddMenu}>Create a Menu Catalogue</Button>
+      <Button variant='primary' className="mb-3" size="sm" onClick={redirectToAddMenu}>Create a Menu Catalogue</Button>
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -123,7 +127,13 @@ const ListMenus = () => {
           {menus && menus.length === 0 && <EmptyData type='table' colSpan={6} />}
           {menus && menus.length > 0 && menus.map((menu) => (
             <tr key={menu.id}>
-              <td>{`Week ${moment(menu.week).format('w')}`}</td>
+              <td>
+                {moment(menu.week).format('w') === moment().format('w') && menu.statusMenu === STATUS_MENU.Active ?
+                  <p style={{ color: 'green' }}>
+                    {`Week ${moment(menu.week).format('w')}`}
+                  </p> : `Week ${moment(menu.week).format('w')}`
+                }
+              </td>
               <td>{menu && menu.entree && menu.entree.name ? `${menu.entree.name} (${menu?.entree?.ordered ? menu?.entree?.ordered : '0'}/${menu?.entree?.quantity})` : ''}</td>
               <td>{menu && menu.mainMeal && menu.mainMeal.name ? `${menu.mainMeal.name} (${menu?.mainMeal?.ordered ? menu?.mainMeal?.ordered : '0'}/${menu?.mainMeal?.quantity})` : ''}</td>
               <td>{menu && menu.dessert && menu.dessert.name ? `${menu.dessert.name} (${menu?.dessert?.ordered ? menu?.dessert?.ordered : '0'}/${menu?.dessert?.quantity})` : ''}</td>
@@ -131,8 +141,8 @@ const ListMenus = () => {
                 <Badge bg={menu.statusMenu === STATUS_MENU.Active ? "success" : (menu.statusMenu === STATUS_MENU.Inactive ? "secondary" : "danger")}>{menu.statusMenu}</Badge>
               </td>
               <td>
-                <Button variant='primary' onClick={() => redirectToEditMenu(menu)}>Edit</Button>
-                <Button variant='danger' style={{ marginLeft: '0.5rem' }} onClick={() => onOpenConfirmDelete(menu)}>Delete</Button>
+                <Button variant='primary' size="sm" className='mr-2 mb-2' onClick={() => redirectToEditMenu(menu)}>Edit</Button>
+                <Button variant='danger' size="sm" className='mb-2' onClick={() => onOpenConfirmDelete(menu)}>Delete</Button>
               </td>
             </tr>
           ))}

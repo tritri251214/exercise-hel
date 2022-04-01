@@ -139,7 +139,7 @@ const Profile = () => {
           <Form.Control type="text" placeholder="Enter address 3" value={profile.address3} onChange={(event) => handleChangeProfile(event, 'address3')} />
         </Form.Group>
 
-        <Button variant="primary" onClick={onSave}>
+        <Button variant="primary" size="sm" onClick={onSave}>
           {loadingSave ? <AppLoading type="button" /> : 'Save'}
         </Button>
       </Form>
@@ -178,7 +178,7 @@ const Profile = () => {
                 {order.statusOrder === STATUS_ORDER.Delivered && <Badge bg="secondary">{order.statusOrder}</Badge>}
               </td>
               <td>
-                {(order.statusOrder === STATUS_ORDER.Delivery) && <Button variant='primary' onClick={() => onDelivered(order)}>Delivered</Button>}
+                {(order.statusOrder === STATUS_ORDER.Delivery) && <Button variant='primary' size="sm" onClick={() => onDelivered(order)}>Delivered</Button>}
               </td>
             </tr>
           ))}
