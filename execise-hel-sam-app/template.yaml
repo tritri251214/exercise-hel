@@ -32,6 +32,10 @@ Resources:
       CodeUri: functions/change-picking-to-delivery/
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
+      Role:
+        Fn::GetAtt:
+          - PrepareFoodsFunctionExecutionRole
+          - Arn
 
   SendMailToMemberFunction:
     Type: AWS::Serverless::Function
@@ -39,6 +43,10 @@ Resources:
       CodeUri: functions/send-mail-to-member/
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
+      Role:
+        Fn::GetAtt:
+          - PrepareFoodsFunctionExecutionRole
+          - Arn
 
   EventHandlerFunction:
     Type: AWS::Serverless::Function
@@ -47,11 +55,84 @@ Resources:
       Handler: app.lambdaHandler
       Runtime: nodejs14.x
 
-  # EventSourceMapping:
-  #   Type: AWS::Lambda::EventSourceMapping
+  PrepareFoodsFunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  PrepareFoodsLambdaExecutionPolicy:
+    DependsOn:
+      - PrepareFoodsFunctionExecutionRole
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: prepare-foods-lambda-execution-policy
+      Roles:
+        - Ref: PrepareFoodsFunctionExecutionRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Sub:
+                  - arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*
+                  - region:
+                      Ref: AWS::Region
+                    account:
+                      Ref: AWS::AccountId
+                    lambda:
+                      Ref: ChangePickingToDeliveryFunction
+              - Fn::Sub:
+                  - arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*
+                  - region:
+                      Ref: AWS::Region
+                    account:
+                      Ref: AWS::AccountId
+                    lambda:
+                      Ref: SendMailToMemberFunction
+          - Action:
+              - 'dynamodb:Query'
+              - 'dynamodb:GetItem'
+              - 'dynamodb:UpdateItem'
+              - 'dynamodb:DeleteItem'
+              - 'dynamodb:PutItem'
+            Effect: Allow
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/*"
+
+  # PrepareFoodsStepFunctionRole:
+  #   Type: AWS::IAM::Role
   #   Properties:
-  #     FunctionName: !Ref EventHandlerFunction
-  #     Enabled: true
+  #     AssumeRolePolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #       - Effect: Allow
+  #         Principal:
+  #           Service:
+  #             - !Sub "states.${AWS::Region}.amazonaws.com"
+  #         Action: sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: "PrepareFoodsEngineCallLambdaFunctions"
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Effect: "Allow"
+  #               Action:
+  #                 - "lambda:InvokeFunction"
+  #               Resource:
+  #                 - !Sub ${ChangePickingToDeliveryFunction.Arn}
+  #                 - !Sub ${SendMailToMemberFunction.Arn}
 
 Outputs:
   PrepareFoodsStepFunctionArn:
