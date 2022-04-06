@@ -31,6 +31,7 @@ type UserAddress
   id: ID!
   userID: ID! @index(name: "byUserID", sortKeyFields: ["email"], queryField: "getUserAddressByUserID")
   email: String! @index(name: "byEmail", sortKeyFields: ["userID"], queryField: "getUserByEmail")
+  name: String
   address1: String
   address2: String
   address3: String

@@ -20,6 +20,7 @@ export const createUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -37,6 +38,7 @@ export const updateUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -54,6 +56,7 @@ export const deleteUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -203,6 +206,7 @@ export const createOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -270,6 +274,7 @@ export const updateOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -337,6 +342,7 @@ export const deleteOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3

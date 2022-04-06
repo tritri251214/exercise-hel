@@ -7,6 +7,7 @@ export const onCreateUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -21,6 +22,7 @@ export const onUpdateUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -35,6 +37,7 @@ export const onDeleteUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -172,6 +175,7 @@ export const onCreateOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -236,6 +240,7 @@ export const onUpdateOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -300,6 +305,7 @@ export const onDeleteOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3

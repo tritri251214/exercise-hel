@@ -7,6 +7,7 @@ export const getUserAddress = /* GraphQL */ `
       id
       userID
       email
+      name
       address1
       address2
       address3
@@ -26,6 +27,7 @@ export const listUserAddresses = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -57,6 +59,7 @@ export const getUserAddressByUserID = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -88,6 +91,7 @@ export const getUserByEmail = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -251,6 +255,7 @@ export const getOrder = /* GraphQL */ `
         id
         userID
         email
+        name
         address1
         address2
         address3
@@ -305,6 +310,7 @@ export const listOrders = /* GraphQL */ `
           id
           userID
           email
+          name
           address1
           address2
           address3
@@ -371,6 +377,7 @@ export const getMenuByUserID = /* GraphQL */ `
           id
           userID
           email
+          name
           address1
           address2
           address3
