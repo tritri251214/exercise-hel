@@ -87,7 +87,7 @@ function getRoutes(role) {
     }, []);
   } else {
     routes = defineRoutes.reduce((arr, cur) => {
-      if (cur.permission.indexOf(role) !== -1) {
+      if (cur.permission.indexOf(ROLE.GUEST) !== -1) {
         arr.push(cur);
       }
       return arr;
